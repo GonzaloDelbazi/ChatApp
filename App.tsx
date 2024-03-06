@@ -1,6 +1,7 @@
-import { StyleSheet, View } from 'react-native';
-import Routes from './Routes';
-import UserProvider from './src/providers/context/UserContext';
+import { StyleSheet, View } from "react-native";
+import Routes from "./Routes";
+import UserProvider from "./src/providers/context/UserContext";
+import "react-native-gesture-handler";
 
 export default function App() {
   return (
@@ -14,6 +15,6 @@ export default function App() {
 
 const styles = StyleSheet.create({
   main: {
-    flex: 1
-  }
-})
+    flex: 1,
+  },
+});

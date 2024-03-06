@@ -12,6 +12,7 @@ import {
 import { auth } from "../../../../config/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import styles from "../styles/Login.styles";
+import { firebaseApi } from "../../../firebaseApi";
 const bgImage = require("../../../../assets/bgImage.png");
 
 const SignUp = ({ navigation }: any) => {
@@ -34,25 +35,26 @@ const SignUp = ({ navigation }: any) => {
   };
 
   const validatePasswords = () => {
-    const regex = new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/)
+    const regex = new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/);
     console.log(password, regex.test(password));
-    if(regex.test(password)) {
-      if(password === copyPassword) {      
-        setPasswordError("")
+    if (regex.test(password)) {
+      if (password === copyPassword) {
+        setPasswordError("");
         return true;
       }
-      setPasswordError("Las contraseñas no son iguales")
+      setPasswordError("Las contraseñas no son iguales");
       return false;
     }
-    setPasswordError("Porfavor ingrese una contraseña valida")
+    setPasswordError("Porfavor ingrese una contraseña valida");
     return false;
-  }
+  };
 
   const onHandleSignUp = () => {
     if (validateEmail() && validatePasswords()) {
       createUserWithEmailAndPassword(auth, email, password)
-        .then(() => {
-          console.log("User created")
+        .then(({ user }) => {
+          firebaseApi.saveUser(user);
+          console.log("User created");
         })
         .catch((err) => console.error("SignUp error: ", err.message));
     }
@@ -95,11 +97,7 @@ const SignUp = ({ navigation }: any) => {
           value={copyPassword}
           onChangeText={(text) => setCopyPassword(text)}
         />
-        {
-          passwordError && (
-            <Text style={{color: 'red'}}>{passwordError}</Text>
-          )
-        }
+        {passwordError && <Text style={{ color: "red" }}>{passwordError}</Text>}
         <TouchableOpacity style={styles.button} onPress={onHandleSignUp}>
           <Text style={styles.buttonText}>Registrarse</Text>
         </TouchableOpacity>

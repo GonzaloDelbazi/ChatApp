@@ -4,18 +4,16 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { ChatScreen, LoginScreen, SignUp, Home } from "./src/screens";
 import { auth } from "./config/firebase";
 import { UserContext } from "./src/providers/context/UserContext";
-import { ActivityIndicator, View } from "react-native";
-
+import {
+  ActivityIndicator,
+  TextInput,
+  View,
+  TouchableOpacity,
+  Text,
+} from "react-native";
+import { PrivateStack } from "./src/screens/Private/routes";
+import FirstTime from "./src/screens/Private/FirstTime";
 const Stack = createStackNavigator();
-
-const ChatStack = () => {
-  return (
-    <Stack.Navigator initialRouteName="Home">
-      <Stack.Screen name="Home" component={Home} />
-      <Stack.Screen name="Chat" component={ChatScreen} />
-    </Stack.Navigator>
-  );
-};
 
 const AuthStack = () => {
   return (
@@ -36,11 +34,20 @@ const Routes = () => {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       setLoading(true);
+      console.log(user);
       user ? addUser(user) : addUser(null);
       setTimeout(() => setLoading(false), 1000);
     });
     return () => unsubscribe();
   }, []);
+
+  const PrivateRoutes = () => {
+    if (user.displayName) {
+      return <PrivateStack />;
+    }
+    return <FirstTime />;
+  };
+
   if (loading) {
     return (
       <View
@@ -56,7 +63,7 @@ const Routes = () => {
   }
   return (
     <NavigationContainer>
-      {!user ? <AuthStack /> : <ChatStack />}
+      {!user ? <AuthStack /> : <PrivateRoutes />}
     </NavigationContainer>
   );
 };
